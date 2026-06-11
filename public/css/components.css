@@ -350,7 +350,10 @@
 /* ==================== MODALS ==================== */
 .modal-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   z-index: var(--z-overlay);
@@ -652,7 +655,7 @@
 }
 
 /* Voice Chat Overlay */
-.active-call-overlay { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-full); padding: 8px 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-lg); z-index: 1000; animation: slideDown 0.3s ease; } .call-info { display: flex; align-items: center; gap: 12px; } .call-avatar { width: 32px; height: 32px; border-radius: var(--r-full); background: var(--color-primary-muted); display: flex; align-items: center; justify-content: center; font-size: 14px; } .call-details { display: flex; flex-direction: column; } .call-name { font-weight: 600; font-size: 0.875rem; } .call-status { font-size: 0.75rem; color: var(--color-text-secondary); } .call-actions { display: flex; gap: 8px; border-left: 1px solid var(--color-border); padding-left: 16px; } .call-mute-btn.muted { color: #ef4444; background: rgba(239, 68, 68, 0.1); } .call-end-btn { color: #fff; background: #ef4444; } .call-end-btn:hover { background: #dc2626; } @keyframes slideDown { from { top: -100px; } to { top: 16px; } }
+.active-call-overlay { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--r-full); padding: 8px 16px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-lg); z-index: 1000; animation: slideDown 0.3s ease; } .call-info { display: flex; align-items: center; gap: 12px; } .call-avatar { width: 32px; height: 32px; border-radius: var(--r-full); background: var(--color-primary-muted); display: flex; align-items: center; justify-content: center; font-size: 14px; } .call-details { display: flex; flex-direction: column; } .call-name { font-weight: 600; font-size: 0.875rem; } .call-status { font-size: 0.75rem; color: var(--color-text-secondary); } .call-actions { display: flex; gap: 8px; border-left: 1px solid var(--color-border); padding-left: 16px; } .call-mute-btn.muted { color: #ef4444; background: rgba(239, 68, 68, 0.1); } .call-end-btn { color: #fff; background: #ef4444; } .call-end-btn:hover { background: #dc2626; } @keyframes slideDown { from { top: -100px; } to { top: max(16px, env(safe-area-inset-top)); } }
 
 /* Toggle Switch */
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-border); transition: .4s; border-radius: 24px; } .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; } input:checked + .slider { background-color: var(--color-primary); } input:checked + .slider:before { transform: translateX(20px); }

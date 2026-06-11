@@ -6,6 +6,13 @@ const NotificationManager = {
   wakeLock: null,
 
   async requestPermission() {
+    if ('serviceWorker' in navigator) {
+      try {
+        await navigator.serviceWorker.register('/sw.js');
+      } catch (e) {
+        console.error('Service Worker registration failed:', e);
+      }
+    }
     if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
       try {
         await Notification.requestPermission();
@@ -15,15 +22,25 @@ const NotificationManager = {
     }
   },
 
-  notify(title, options = {}) {
+  async notify(title, options = {}) {
     if (localStorage.getItem('silent_mode') === 'true') return;
     if ('Notification' in window && Notification.permission === 'granted') {
-      const notification = new Notification(title, {
+      const opts = {
         icon: '/favicon.ico',
         badge: '/favicon.ico',
         requireInteraction: true, // High accuracy/persistence
         ...options
-      });
+      };
+
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        if (registration) {
+          return registration.showNotification(title, opts);
+        }
+      }
+
+      // Fallback
+      const notification = new Notification(title, opts);
       notification.onclick = function() {
         window.focus();
         this.close();
