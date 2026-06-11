@@ -178,6 +178,23 @@ const ChatView = {
   async initChat(conversationId) {
     this.currentConversation = parseInt(conversationId);
 
+    if (!this.currentRecipient) {
+      try {
+        const convs = await API.get('/api/messages/conversations');
+        const conv = convs.find(c => c.id === this.currentConversation);
+        if (conv) {
+          this.currentRecipient = { 
+            id: conv.other_user_id, 
+            username: conv.other_username, 
+            avatar: conv.other_avatar, 
+            is_online: conv.other_online 
+          };
+        }
+      } catch (err) {
+        console.error('Failed to load conversation details:', err);
+      }
+    }
+
     // Set header info
     const nameEl = document.getElementById('chatName');
     const avatarEl = document.getElementById('chatAvatar');
@@ -244,6 +261,43 @@ const ChatView = {
   },
 
   renderMessage(msg) {
+    let isSystem = false;
+    let systemText = '';
+    
+    try {
+      if (msg.content && msg.content.startsWith('{"system"')) {
+        const data = JSON.parse(msg.content);
+        isSystem = true;
+        if (data.system === 'call') {
+          const action = data.status === 'rejected' ? 'rejected' : 'ended';
+          const duration = data.duration ? ` • ${Math.floor(data.duration/60)}m ${data.duration%60}s` : '';
+          systemText = `📞 Voice call ${action}${duration}`;
+        } else if (data.system === 'game') {
+          const gameNames = {
+            'truth_or_dare': 'Truth or Dare', 'would_you_rather': 'Would You Rather',
+            'never_have_i_ever': 'Never Have I Ever', 'emoji_guess': 'Emoji Guess',
+            'typing_race': 'Typing Race', 'tic_tac_toe': 'Tic-Tac-Toe', 'quiz_battle': 'Quiz Battle'
+          };
+          const gameName = gameNames[data.game_type] || 'Game';
+          let resultText = 'finished';
+          if (data.winner_id === App.currentUser?.id) resultText = '• You won! 🎉';
+          else if (data.winner_id) resultText = `• ${data.winner_name || 'Opponent'} won!`;
+          else if (data.status === 'draw') resultText = '• Draw 🤝';
+          systemText = `🎮 ${gameName} ${resultText}`;
+        }
+      }
+    } catch (e) {
+      // Not a valid system message, fallback to normal rendering
+    }
+
+    if (isSystem) {
+      return `
+        <div class="date-separator">
+          <span>${ChatView.escapeHtml(systemText)}</span>
+        </div>
+      `;
+    }
+
     const isSent = msg.sender_id === App.currentUser?.id;
     const reactions = msg.reactions ? (typeof msg.reactions === 'string' ? JSON.parse(msg.reactions) : msg.reactions) : [];
 

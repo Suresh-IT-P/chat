@@ -11,6 +11,7 @@ const VoiceManager = {
   callTimer: null,
   callDuration: 0,
   currentCallUser: null,
+  currentConversation: null,
   
   // STUN servers
   rtcConfig: {
@@ -51,10 +52,11 @@ const VoiceManager = {
       this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.isCalling = true;
       this.currentCallUser = { id: recipientId, username: recipientUsername };
+      this.currentConversation = ChatView.currentConversation;
       
       NotificationManager.requestWakeLock();
       
-      SocketManager.emit('call_initiate', { recipient_id: recipientId });
+      SocketManager.emit('call_initiate', { recipient_id: recipientId, conversation_id: this.currentConversation });
       this.showCallOverlay(recipientUsername, 'Calling...');
     } catch (err) {
       console.error('Error accessing microphone:', err);
@@ -66,7 +68,7 @@ const VoiceManager = {
   handleIncomingCall(data) {
     if (this.isCalling) {
       // Busy
-      SocketManager.emit('call_reject', { caller_id: data.caller_id });
+      SocketManager.emit('call_reject', { caller_id: data.caller_id, conversation_id: data.conversation_id });
       return;
     }
 
@@ -81,37 +83,38 @@ const VoiceManager = {
         <h2 style="margin-bottom: 8px; font-family: Outfit, sans-serif">Incoming Call</h2>
         <p style="color: var(--color-text-secondary); margin-bottom: 24px">${data.caller_username} is calling you</p>
         <div class="flex gap-md" style="justify-content: center">
-          <button class="btn btn-primary" onclick="VoiceManager.acceptCall(${data.caller_id}, '${data.caller_username}')" style="background: #10b981; border-color: #10b981">Answer</button>
-          <button class="btn btn-secondary" onclick="VoiceManager.rejectCall(${data.caller_id})" style="color: #ef4444; border-color: #ef4444">Decline</button>
+          <button class="btn btn-primary" onclick="VoiceManager.acceptCall(${data.caller_id}, '${data.caller_username}', ${data.conversation_id})" style="background: #10b981; border-color: #10b981">Answer</button>
+          <button class="btn btn-secondary" onclick="VoiceManager.rejectCall(${data.caller_id}, ${data.conversation_id})" style="color: #ef4444; border-color: #ef4444">Decline</button>
         </div>
       </div>
     `;
     document.body.appendChild(overlay);
   },
 
-  async acceptCall(callerId, callerUsername) {
+  async acceptCall(callerId, callerUsername, conversationId) {
     document.getElementById('incomingCallModal')?.remove();
     
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.isCalling = true;
       this.currentCallUser = { id: callerId, username: callerUsername };
+      this.currentConversation = conversationId;
       
       NotificationManager.requestWakeLock();
       
-      SocketManager.emit('call_accept', { caller_id: callerId });
+      SocketManager.emit('call_accept', { caller_id: callerId, conversation_id: conversationId });
       this.showCallOverlay(callerUsername, 'Connecting...');
     } catch (err) {
       console.error('Error accessing microphone:', err);
       Toast.error('Microphone access denied');
-      SocketManager.emit('call_reject', { caller_id: callerId });
+      SocketManager.emit('call_reject', { caller_id: callerId, conversation_id: conversationId });
       this.cleanupCall();
     }
   },
 
-  rejectCall(callerId) {
+  rejectCall(callerId, conversationId) {
     document.getElementById('incomingCallModal')?.remove();
-    SocketManager.emit('call_reject', { caller_id: callerId });
+    SocketManager.emit('call_reject', { caller_id: callerId, conversation_id: conversationId });
   },
 
   async handleCallAccepted(data) {
@@ -264,7 +267,7 @@ const VoiceManager = {
 
   endCall() {
     if (this.currentCallUser) {
-      SocketManager.emit('call_end', { target_id: this.currentCallUser.id });
+      SocketManager.emit('call_end', { target_id: this.currentCallUser.id, conversation_id: this.currentConversation, duration: this.callDuration });
     }
     this.cleanupCall();
   },
@@ -300,6 +303,7 @@ const VoiceManager = {
 
     this.isCalling = false;
     this.currentCallUser = null;
+    this.currentConversation = null;
     this.isMuted = false;
   }
 };

@@ -245,5 +245,38 @@ document.querySelectorAll('.nav-item').forEach(item => {
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
-  App.init();
+  if (localStorage.getItem('app_unlocked') !== 'true') {
+    renderAppLock();
+  } else {
+    App.init();
+  }
 });
+
+function renderAppLock() {
+  document.getElementById('bottomNav').style.display = 'none';
+  document.getElementById('app').innerHTML = `
+    <div class="auth-view">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <h1>🔒 Secure Access</h1>
+          <p>Please enter the master password.</p>
+        </div>
+        <form onsubmit="unlockApp(event)" style="display:flex; flex-direction:column; gap:var(--sp-md);">
+          <input type="password" id="masterPassword" class="input" placeholder="Password" required autofocus style="width: 100%; padding: var(--sp-md); border-radius: var(--r-lg); border: 2px solid var(--color-border); background: var(--input-bg); color: var(--color-text);">
+          <button type="submit" class="btn btn-primary" style="width: 100%">Unlock App</button>
+        </form>
+      </div>
+    </div>
+  `;
+}
+
+window.unlockApp = function(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('masterPassword').value.trim();
+  if (pwd.toLowerCase() === 'rowdy') {
+    localStorage.setItem('app_unlocked', 'true');
+    App.init();
+  } else {
+    Toast.error('Incorrect password');
+  }
+};

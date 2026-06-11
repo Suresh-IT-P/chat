@@ -218,7 +218,7 @@ function setupGames(io, socket, onlineUsers) {
 
       // Check if game is over
       if (gameState.status === 'finished') {
-        await endGame(gameState, game_id);
+        await endGame(gameState, game_id, io);
         io.to(gameRoom).emit('game_ended', { game_state: gameState });
         activeGames.delete(game_id);
       }
@@ -526,7 +526,7 @@ function getWinLine(board) {
 }
 
 // ==================== END GAME ====================
-async function endGame(state, gameId) {
+async function endGame(state, gameId, io) {
   try {
     const winnerId = state.data.winnerId || null;
     await pool.execute(
@@ -539,6 +539,37 @@ async function endGame(state, gameId) {
         'UPDATE game_scores SET score = ? WHERE game_id = ? AND user_id = ?',
         [player.score, gameId, player.id]
       );
+    }
+    
+    // Insert system message for game history
+    const [games] = await pool.execute('SELECT conversation_id FROM games WHERE id = ?', [gameId]);
+    if (games.length > 0) {
+      const convId = games[0].conversation_id;
+      const senderId = state.players[0]?.id;
+      const isDraw = state.data.winner === 'draw' || (state.data.finalResults && state.data.finalResults.length > 1 && state.data.finalResults[0].score === state.data.finalResults[1].score);
+      const content = JSON.stringify({ 
+        system: 'game', 
+        status: isDraw ? 'draw' : 'finished', 
+        game_type: state.type,
+        winner_id: state.data.winnerId || null,
+        winner_name: state.data.winnerName || null
+      });
+      
+      const [res] = await pool.execute(
+        'INSERT INTO messages (conversation_id, sender_id, content) VALUES (?, ?, ?)',
+        [convId, senderId, content]
+      );
+      
+      const [msgs] = await pool.execute(
+        `SELECT m.*, u.username as sender_username, u.avatar_url as sender_avatar FROM messages m JOIN users u ON u.id = m.sender_id WHERE m.id = ?`,
+        [res.insertId]
+      );
+      
+      if (msgs.length > 0 && io) {
+        state.players.forEach(p => {
+          io.to(`user:${p.id}`).emit('new_message', { message: msgs[0] });
+        });
+      }
     }
   } catch (err) {
     console.error('End game DB error:', err);
