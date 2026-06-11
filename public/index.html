@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Chat with friends in real time. Play fun interactive games together. Modern, fast, and beautiful.">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>ChatVibe ✨</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/chat.css">
+  <link rel="stylesheet" href="/css/games.css">
+  <link rel="stylesheet" href="/css/animations.css">
+
+  <style>
+    /* Auth pages */
+    .auth-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: var(--sp-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-view::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--color-gradient);
+      opacity: 0.08;
+      animation: authBgShift 8s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-2xl);
+      padding: var(--sp-xl);
+      position: relative;
+      z-index: 1;
+      animation: scaleIn 0.4s ease;
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: var(--sp-xl);
+    }
+
+    .auth-logo h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--color-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-logo p {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: var(--sp-lg);
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+
+    .auth-footer a {
+      color: var(--color-primary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Profile page */
+    .profile-section {
+      padding: var(--sp-lg);
+    }
+
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--sp-xl);
+      gap: var(--sp-md);
+    }
+
+    .profile-avatar-wrapper {
+      position: relative;
+    }
+
+    .profile-avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-full);
+      background: var(--color-primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.875rem;
+      border: 2px solid var(--color-bg);
+    }
+
+    .profile-username {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .profile-email {
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-md) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-label {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+    }
+
+    .settings-label .settings-icon {
+      font-size: 1.25rem;
+    }
+
+    .settings-label .settings-text {
+      font-weight: 500;
+    }
+
+    .theme-selector {
+      display: flex;
+      gap: var(--sp-sm);
+      padding: var(--sp-md) 0;
+    }
+
+    .theme-option {
+      flex: 1;
+      padding: var(--sp-md);
+      border-radius: var(--r-lg);
+      border: 2px solid var(--color-border);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      background: transparent;
+    }
+
+    .theme-option.active {
+      border-color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+
+    .theme-option .theme-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-md);
+      margin: 0 auto var(--sp-sm);
+    }
+
+    .theme-option .theme-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .theme-preview-classic {
+      background: linear-gradient(135deg, #0084ff, #00c6ff);
+    }
+
+    .theme-preview-pro {
+      background: linear-gradient(135deg, #7c3aed, #2dd4bf);
+    }
+
+    .theme-preview-romantic {
+      background: linear-gradient(135deg, #e91e63, #9c27b0);
+    }
+  </style>
+</head>
+<body class="theme-pro">
+  <div id="app"></div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" id="bottomNav" style="display: none;">
+    <button class="nav-item" data-view="chats" id="nav-chats">
+      <span class="nav-icon">💬</span>
+      <span>Chats</span>
+      <span class="nav-badge badge hidden" id="chatBadge">0</span>
+    </button>
+    <button class="nav-item" data-view="friends" id="nav-friends">
+      <span class="nav-icon">👥</span>
+      <span>Friends</span>
+      <span class="nav-badge badge hidden" id="friendBadge">0</span>
+    </button>
+    <button class="nav-item" data-view="profile" id="nav-profile">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/components/toast.js"></script>
+  <script src="/js/components/voiceManager.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/components/emojiPicker.js"></script>
+  <script src="/js/components/imageViewer.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/chat.js"></script>
+  <script src="/js/friends.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/games/gameManager.js"></script>
+  <script src="/js/games/truthOrDare.js"></script>
+  <script src="/js/games/wouldYouRather.js"></script>
+  <script src="/js/games/neverHaveIEver.js"></script>
+  <script src="/js/games/emojiGuess.js"></script>
+  <script src="/js/games/typingRace.js"></script>
+  <script src="/js/games/ticTacToe.js"></script>
+  <script src="/js/games/quizBattle.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+/* =============================================
+   THEMES.CSS — Classic, Pro, Romantic
+   ============================================= */
+
+/* ==================== PRO THEME (Default) ==================== */
+body, body.theme-pro {
+  --color-bg: #0d1117;
+  --color-bg-secondary: #161b22;
+  --color-surface: rgba(22, 27, 34, 0.85);
+  --color-surface-hover: rgba(33, 38, 45, 0.9);
+  --color-surface-glass: rgba(22, 27, 34, 0.6);
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79b8ff;
+  --color-primary-muted: rgba(88, 166, 255, 0.15);
+  --color-accent: #7c3aed;
+  --color-accent-2: #2dd4bf;
+  --color-gradient: linear-gradient(135deg, #7c3aed, #6366f1, #2dd4bf);
+  --color-gradient-subtle: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(45,212,191,0.2));
+  --color-text: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #484f58;
+  --color-border: rgba(48, 54, 61, 0.6);
+  --color-border-hover: rgba(88, 166, 255, 0.4);
+  --color-success: #3fb950;
+  --color-error: #f85149;
+  --color-warning: #d29922;
+  --color-info: #58a6ff;
+
+  /* Chat bubbles */
+  --bubble-sent-bg: linear-gradient(135deg, #7c3aed, #6366f1);
+  --bubble-sent-text: #ffffff;
+  --bubble-received-bg: rgba(48, 54, 61, 0.6);
+  --bubble-received-text: #e6edf3;
+
+  /* Glass effect */
+  --glass-bg: rgba(22, 27, 34, 0.7);
+  --glass-border: rgba(48, 54, 61, 0.5);
+  --glass-blur: blur(20px);
+
+  /* Nav */
+  --nav-bg: rgba(13, 17, 23, 0.95);
+  --nav-active: #58a6ff;
+  --nav-inactive: #484f58;
+
+  /* Input */
+  --input-bg: rgba(22, 27, 34, 0.8);
+  --input-border: rgba(48, 54, 61, 0.8);
+  --input-focus-border: #58a6ff;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+body.theme-pro .glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+/* ==================== CLASSIC THEME ==================== */
+body.theme-classic {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f0f2f5;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f5f5;
+  --color-surface-glass: rgba(255,255,255,0.9);
+  --color-primary: #0084ff;
+  --color-primary-hover: #0070e0;
+  --color-primary-muted: rgba(0, 132, 255, 0.1);
+  --color-accent: #0084ff;
+  --color-accent-2: #00c6ff;
+  --color-gradient: linear-gradient(135deg, #0084ff, #00c6ff);
+  --color-gradient-subtle: linear-gradient(135deg, rgba(0,132,255,0.1), rgba(0,198,255,0.1));
+  --color-text: #1c1e21;
+  --color-text-secondary: #65676b;
+  --color-text-muted: #8a8d91;
+  --color-border: #e4e6eb;
+  --color-border-hover: rgba(0, 132, 255, 0.4);
+  --color-success: #31a24c;
+  --color-error: #e41e3f;
+  --color-warning: #f0932b;
+  --color-info: #0084ff;
+
+  --bubble-sent-bg: linear-gradient(135deg, #0084ff, #00a2ff);
+  --bubble-sent-text: #ffffff;
+  --bubble-received-bg: #e4e6eb;
+  --bubble-received-text: #1c1e21;
+
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: #e4e6eb;
+  --glass-blur: blur(10px);
+
+  --nav-bg: rgba(255, 255, 255, 0.98);
+  --nav-active: #0084ff;
+  --nav-inactive: #8a8d91;
+
+  --input-bg: #f0f2f5;
+  --input-border: #e4e6eb;
+  --input-focus-border: #0084ff;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+body.theme-classic .glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==================== ROMANTIC THEME ==================== */
+body.theme-romantic {
+  --color-bg: #fce4ec;
+  --color-bg-secondary: #f8e8f0;
+  --color-surface: rgba(255, 255, 255, 0.75);
+  --color-surface-hover: rgba(255, 255, 255, 0.9);
+  --color-surface-glass: rgba(255, 255, 255, 0.6);
+  --color-primary: #e91e63;
+  --color-primary-hover: #c2185b;
+  --color-primary-muted: rgba(233, 30, 99, 0.12);
+  --color-accent: #9c27b0;
+  --color-accent-2: #e91e63;
+  --color-gradient: linear-gradient(135deg, #e91e63, #9c27b0, #7b1fa2);
+  --color-gradient-subtle: linear-gradient(135deg, rgba(233,30,99,0.15), rgba(156,39,176,0.15));
+  --color-text: #4a0e2b;
+  --color-text-secondary: #7c3656;
+  --color-text-muted: #a06080;
+  --color-border: rgba(233, 30, 99, 0.15);
+  --color-border-hover: rgba(233, 30, 99, 0.4);
+  --color-success: #66bb6a;
+  --color-error: #e53935;
+  --color-warning: #ffa726;
+  --color-info: #e91e63;
+
+  --bubble-sent-bg: linear-gradient(135deg, #e91e63, #9c27b0);
+  --bubble-sent-text: #ffffff;
+  --bubble-received-bg: rgba(255, 255, 255, 0.85);
+  --bubble-received-text: #4a0e2b;
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(233, 30, 99, 0.2);
+  --glass-blur: blur(16px);
+
+  --nav-bg: rgba(252, 228, 236, 0.95);
+  --nav-active: #e91e63;
+  --nav-inactive: #a06080;
+
+  --input-bg: rgba(255, 255, 255, 0.7);
+  --input-border: rgba(233, 30, 99, 0.2);
+  --input-focus-border: #e91e63;
+
+  background: linear-gradient(135deg, #fce4ec, #f3e5f5, #ede7f6);
+  background-attachment: fixed;
+  color: var(--color-text);
+}
+
+body.theme-romantic .glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.1);
+}
+
+/* Romantic floating hearts container */
+body.theme-romantic::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(233, 30, 99, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(156, 39, 176, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(233, 30, 99, 0.03) 0%, transparent 70%);
+}
